@@ -1,6 +1,6 @@
 $ComputerName = 'server1'
-$inpath = 'C:\intel\Logs'
-$DateStr = $Date.ToString("yyMMdd")
+$inpath = 'C:\test'
+$DateStr = (Get-date).ToString("yyMMdd")
 $outfile = "c:\output_logs\logs$DateStr.txt"
 $regex = "."
 
@@ -16,28 +16,16 @@ catch{
 
 
     try {
-        $logs = Get-ChildItem -Path $inpath
-     -ErrorAction Stop
+        $logs = Get-ChildItem -Path $inpath -ErrorAction Stop
     }
     Catch {
         Write-Output 'No Log file found, nothing to do here...'
     }
 
-
-
-try {
-    $logs = Get-ChildItem -Path $inpath
- -Recurse -ErrorAction Continue
-}
-Catch {
-    Write-Output $_.exception.message.tostring()
-}
-
-
 #Exports content of logs to a logfile
 foreach ($log in $logs){
 try {
-    get-content -Path $log.FullName -ErrorAction Continue | Select-String -Pattern $regex | ForEach-Object {"$computername" + $_ } | Out-File -filepath $outfile -Force
+    get-content -Path $log.FullName -ErrorAction Continue | Select-String -Pattern $regex | ForEach-Object {"$computername" + $_ } | Out-File -filepath $outfile -Force -Append
 }
     Catch {Write-Output $_.exception.message.tostring()
     }
