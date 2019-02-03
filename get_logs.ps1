@@ -14,6 +14,9 @@ function Get-Logs {
     
     .PARAMETER Regex
     The regex parameters you want to search for
+
+    .PARAMETER Outfile
+    The regex parameters you want to search for
             
     .EXAMPLE
     get-logs -ComputerName server1.contoso.com,server2.contoso.com,server3.contoso.com,server4.contoso.com -inpath c:\temp -regex [1-9]
@@ -31,11 +34,15 @@ function Get-Logs {
         
         [parameter(Mandatory = $true, HelpMessage = "type the Regex string that you need to search in the logs")]
         [ValidateNotNullorEmpty()]
-        [string]$regex
+        [string]$regex,
+
+        [parameter(Mandatory = $true, HelpMessage = "Local File path for script output")]
+        [ValidateNotNullorEmpty()]
+        [string]$Outfile
     )
 
     $DateStr = (Get-date).ToString("yyMMdd")
-    $outfile = "c:\output_logs\logs$DateStr.txt"
+    $outfile = "$outfile\logs$DateStr.txt"
 
     #creates Destination for logs in local disk if it doesn't exist
     try {
@@ -49,7 +56,6 @@ function Get-Logs {
     #Gets a list of files that are in the log path
     foreach ($computer in $ComputerName) {
         $session = New-PSSession -ComputerName $Computer
-        $scriptblockinpath = "Get-ChildItem -Path $inpath"
         Get-job | Remove-Job     
         Invoke-Command -Session $session {param($inpath) Get-ChildItem -Path $inpath -ErrorAction SilentlyContinue } -ArgumentList $inpath -AsJob
         $logs = get-job | wait-job | Receive-Job -keep
