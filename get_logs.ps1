@@ -4,7 +4,7 @@ function Get-Logs {
     Searches for Regex strings in remote logs
     
     .DESCRIPTION
-    Searches for logs on remote hosts for a defined regex, due to time constraints it will not ask you for credentials, you will have to run from with your local creds. It will not run in parallel.
+    Searches for logs on remote hosts for a defined regex, you will have to run from with your local creds. 
     
     .PARAMETER ComputerName
     Computer name in fqdn
